@@ -13,13 +13,20 @@
     <p>Using v-html directive: <span v-html="rawHtml"></span></p>
     <template v-if="loginType === 'username'">
       <label>Username</label>
-      <input placeholder="Enter your username" key="1">
+      <input placeholder="Enter your username" key="11">
     </template>
     <template v-else>
       <label>Email</label>
       <input placeholder="Enter your email address" key="2">
     </template>
     <button @click="exchange">Change login type</button>
+    <div v-for="(value, prop, index) in object" :key="index">
+      {{ index }}-{{ prop }}: {{ value }}
+    </div>
+    <div @click.capture="conso($event)">
+      <button @click.stop="addone($event)">add 1</button>
+    </div>
+    <p>{{ count }}</p>
   </div>
 </template>
 
@@ -28,6 +35,7 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
+      count: 0,
       loginType: 'username',
       rawHtml: '<span style="color:red">This should be red.</span>',
       msg: 'Hello World',
@@ -43,7 +51,12 @@ export default {
           todo: 'go fishing',
           id: 2
         }
-      ]
+      ],
+      object: {
+        firstName: 'John',
+        lastName: 'Smith',
+        age: 25
+      }
     }
   },
   methods: {
@@ -52,6 +65,13 @@ export default {
     },
     exchange: function () {
       this.loginType = this.loginType === 'username' ? 'email' : 'username'
+    },
+    addone: function (event) {
+      console.log(event.target.tagName)
+      this.count += 1
+    },
+    conso: function (event) {
+      console.log(event.currentTarget.tagName)
     }
   },
   watch: {
