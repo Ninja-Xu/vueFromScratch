@@ -11,6 +11,7 @@
     </ul>
     <input type="text" v-model="textInput">
     <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+    <hr>
     <template v-if="loginType === 'username'">
       <label>Username</label>
       <input placeholder="Enter your username" key="11">
@@ -27,6 +28,24 @@
       <button @click.stop="addone($event)">add 1</button>
     </div>
     <p>{{ count }}</p>
+    <hr>
+    <select name="fruit" id="fruit" v-model="favorite">
+      <option v-for="item of fruit" :value="item" :key="item">{{ item }}</option>
+    </select>
+    <span>Your favorite fruit is: {{ favorite }}</span>
+    <br>
+    <select name="fruits" id="fruits" multiple v-model="favorites">
+      <option v-for="item of fruit" :value="item" :key="item">{{ item }}</option>
+    </select>
+    <span>Your favorite fruits are: {{ favorites }}</span>
+    <br>
+    <input type="checkbox" id="check" v-model="ischecked">
+    <label for="check">{{ ischecked }}</label>
+    <br>
+    <input type="checkbox" v-model="yesorno" true-value="Chiness" false-value="Japaness">
+    <span>You choose {{ yesorno }}</span>
+    <br>
+    <input type="text" v-model.number="age">
   </div>
 </template>
 
@@ -35,6 +54,12 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
+      age: 23,
+      yesorno: 'Japaness',
+      ischecked: false,
+      fruit: ['apple', 'pear', 'peach', 'watermelon'],
+      favorite: 'peach',
+      favorites: [],
       count: 0,
       loginType: 'username',
       rawHtml: '<span style="color:red">This should be red.</span>',
