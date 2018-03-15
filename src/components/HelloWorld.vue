@@ -80,10 +80,17 @@
         <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis enim libero, at lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
       </transition>
     </div>
+    <hr>
+    <div v-focus:foo.baz="1 + 1" v-color:color="'red'"></div>
   </div>
 </template>
 
 <script>
+var mixin = {
+  created: function () {
+    console.log('混入对象的钩子被调用')
+  }
+}
 export default {
   name: 'HelloWorld',
   components: {
@@ -142,6 +149,36 @@ export default {
         </footer>
       </div>`
     }
+  },
+  directives: {
+    focus: {
+      bind: function (el, binding, vnode) {
+        var s = JSON.stringify
+        let { name, value, expression, arg, modifiers } = binding
+        el.innerHTML = `
+          name: ${s(name)}<br>
+          value: ${s(value)}<br>
+          expression: ${s(expression)}<br>
+          arg: ${s(arg)}<br>
+          modifiers: ${s(modifiers)}<br>
+          vnode: ${Object.keys(vnode).join('-')}
+        `
+        console.log('binding')
+      },
+      inserted: function (el, binding) {
+        console.log('inserted')
+        console.log(binding)
+        el.focus()
+      }
+    },
+    color: function (el, binding) {
+      let { arg, value } = binding
+      el.style[arg] = value
+    }
+  },
+  mixins: [mixin],
+  created: function () {
+    console.log('组件钩子被调用')
   },
   data () {
     return {
