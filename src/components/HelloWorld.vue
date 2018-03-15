@@ -4,11 +4,11 @@
     <h2 :title="title" v-if="seen" @click="clickHandler" :class="{ active: true }" class="text-danger">magic seen</h2>
     <h2 v-else>I am hidden...</h2>
     <ul class="tode-list">
-      <li v-for="{todo, id} in todos" :key="id">
-        {{ id }}: {{ todo }}
-        {{ seen ? 'YES' : 'NO'}}
-      </li>
+      <li is="todo-item" v-for="({todo, id}, index) in todos" :key="id" v-bind="todo" @finish="removeTodo(index)"></li>
     </ul>
+    <input type="text" v-model="newtodo">
+    <button @click="addTodo">add todo</button>
+    <br>
     <input type="text" v-model="textInput">
     <p>Using v-html directive: <span v-html="rawHtml"></span></p>
     <hr>
@@ -52,8 +52,25 @@
 <script>
 export default {
   name: 'HelloWorld',
+  components: {
+    'todo-item': {
+      template: `<div>
+        {{ title }}:: {{ content }}
+        <span title="finish this item" @click="$emit('finish')">X</span>
+      </div>`,
+      props: {
+        title: Number,
+        content: {
+          validator: function (str) {
+            return str.length < 15
+          }
+        }
+      }
+    }
+  },
   data () {
     return {
+      newtodo: '',
       age: 23,
       yesorno: 'Japaness',
       ischecked: false,
@@ -69,14 +86,21 @@ export default {
       textInput: 'hello world',
       todos: [
         {
-          todo: 'go shopping',
+          todo: {
+            title: 1,
+            content: 'go shopping'
+          },
           id: 1
         },
         {
-          todo: 'go fishing',
+          todo: {
+            title: 2,
+            content: 'go fishing'
+          },
           id: 2
         }
       ],
+      nextTodoId: 3,
       object: {
         firstName: 'John',
         lastName: 'Smith',
@@ -97,6 +121,20 @@ export default {
     },
     conso: function (event) {
       console.log(event.currentTarget.tagName)
+    },
+    removeTodo: function (index) {
+      this.todos.splice(index, 1)
+    },
+    addTodo: function () {
+      this.todos.push({
+        todo: {
+          title: this.nextTodoId,
+          content: this.newtodo
+        },
+        id: this.nextTodoId
+      })
+      this.nextTodoId++
+      this.newtodo = ''
     }
   },
   watch: {
