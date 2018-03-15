@@ -46,6 +46,26 @@
     <span>You choose {{ yesorno }}</span>
     <br>
     <input type="text" v-model.number="age">
+    <comp :content.sync="dd"></comp>
+    <input type="text" :value="password" @input="password = $event.target.value">
+    <br>
+    <my-checkbox value="my own initial value" :checked="foo" @change="val => {foo = val}"></my-checkbox>
+    <hr>
+    <!-- slot -->
+    <div>
+      <h1>I am parent.</h1>
+      <my-slot>
+        <p>lalala</p>
+      </my-slot>
+    </div>
+    <app-layout>
+      <h1 slot="header">I am header</h1>
+      <div>
+        <p>I am content</p>
+      </div>
+      <h3 slot="footer">I am footer</h3>
+    </app-layout>
+    <hr>
   </div>
 </template>
 
@@ -66,10 +86,54 @@ export default {
           }
         }
       }
+    },
+    'comp': {
+      template: `<div @click="clickHandler">{{ content }}</div>`,
+      props: ['content'],
+      methods: {
+        clickHandler: function () {
+          this.$emit('update:content', 123)
+        }
+      }
+    },
+    'my-checkbox': {
+      model: {
+        prop: 'checked',
+        evemt: 'change'
+      },
+      props: {
+        checked: Boolean,
+        value: String
+      },
+      template: '<p><input type="checkbox" :checked="checked"><span>{{checked}}</span></p>'
+    },
+    'my-slot': {
+      template: `<div>
+          <h1>I am child component.</h1>
+          <slot>
+            I am not show if parent has content...
+          </slot>
+        </div>`
+    },
+    'app-layout': {
+      template: `<div class="container">
+        <header>
+          <slot name="header"></slot>
+        </header>
+        <main>
+          <slot></slot>
+        </main>
+        <footer>
+          <slot name="footer"></slot>
+        </footer>
+      </div>`
     }
   },
   data () {
     return {
+      foo: true,
+      password: '***',
+      dd: 'I want ',
       newtodo: '',
       age: 23,
       yesorno: 'Japaness',
